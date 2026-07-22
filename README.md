@@ -36,6 +36,23 @@ Requiere JDK 17 (el proyecto trae `mise.toml`: `mise install`) y el Android SDK
 adb install app/build/outputs/apk/debug/app-debug.apk
 ```
 
+## Releases
+
+CI (`.github/workflows/ci.yml`) compila y testea en cada push. Para publicar una
+versión instalable, etiqueta y empuja:
+
+```bash
+git tag v1.1.0 && git push origin v1.1.0
+```
+
+El workflow `release.yml` compila el APK **firmado con la keystore del proyecto**
+(secretos `KEYSTORE_BASE64`, `KEYSTORE_PASSWORD`, `KEY_ALIAS`, `KEY_PASSWORD`) y lo
+adjunta a la release de GitHub. Todas las versiones van firmadas con la misma clave
+(SHA-256 `ff61afe6…be064`), por lo que cada APK se instala sobre el anterior sin
+desinstalar. La keystore local vive en `keystore/` (fuera de git) — **haz copia de
+seguridad**: si se pierde y se pierden los secretos, no se podrán firmar
+actualizaciones compatibles.
+
 ## Licencias de terceros
 
 - **LAME 3.100** (LGPL): se compila y enlaza como biblioteca compartida separada
