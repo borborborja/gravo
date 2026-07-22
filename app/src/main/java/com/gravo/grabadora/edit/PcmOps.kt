@@ -46,7 +46,7 @@ object PcmOps {
     fun remapFrame(frame: Long, kept: List<LongRange>): Long? {
         var acc = 0L
         for (range in kept) {
-            if (frame < range.first) return acc
+            if (frame < range.first) return null
             if (frame <= range.last) return acc + (frame - range.first)
             acc += range.last - range.first + 1
         }
