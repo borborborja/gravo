@@ -1,21 +1,58 @@
 package com.gravo.grabadora
 
+import android.Manifest
+import android.content.pm.PackageManager
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.Text
-import androidx.compose.ui.Modifier
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.core.content.ContextCompat
+import androidx.core.os.LocaleListCompat
+import androidx.lifecycle.lifecycleScope
+import androidx.navigation.compose.rememberNavController
+import com.gravo.grabadora.audio.RecStatus
+import com.gravo.grabadora.data.settings.AppSettings
+import com.gravo.grabadora.ui.navigation.AppNavHost
 import com.gravo.grabadora.ui.theme.GrabadoraTheme
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContent {
-            GrabadoraTheme(darkTheme = true) {
-                Text("Grabadora", modifier = Modifier.fillMaxSize().background(GrabadoraTheme.colors.bg))
+        val container = (application as GrabadoraApp).container
+
+        // idioma persistido → locales por app
+        lifecycleScope.launch {
+            val settings = container.settingsRepository.settings.first()
+            val current = AppCompatDelegate.getApplicationLocales().toLanguageTags()
+            if (current.isEmpty() || !current.startsWith(settings.language)) {
+                AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags(settings.language))
             }
+            maybeAutoStart(settings)
+        }
+
+        setContent {
+            val settings by container.settingsRepository.settings
+                .collectAsState(initial = AppSettings())
+            GrabadoraTheme(darkTheme = settings.darkTheme) {
+                val navController = rememberNavController()
+                AppNavHost(navController, container)
+            }
+        }
+    }
+
+    private fun maybeAutoStart(settings: AppSettings) {
+        if (!settings.autoStartRecording) return
+        val granted = ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) ==
+            PackageManager.PERMISSION_GRANTED
+        if (!granted) return
+        val controller = (application as GrabadoraApp).container.recordingController
+        if (controller.status.value == RecStatus.IDLE) {
+            lifecycleScope.launch { controller.startRecording(settings.toSpec(), settings.micId) }
         }
     }
 }
