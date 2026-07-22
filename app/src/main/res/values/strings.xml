@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Grabadora</string>
+
+    <!-- Home -->
+    <string name="home_library">Biblioteca</string>
+    <string name="home_status_idle">Listo para grabar</string>
+    <string name="home_status_recording">Grabando</string>
+    <string name="home_status_paused">En pausa</string>
+    <string name="home_status_permission">Permiso necesario</string>
+    <string name="home_meter_title">Audímetro</string>
+    <string name="home_gain">Ganancia</string>
+    <string name="home_depth">Profundidad</string>
+    <string name="home_format">Formato</string>
+    <string name="home_hint_idle">Toca para grabar</string>
+    <string name="home_hint_recording">Toca = pausa · mantén = finalizar</string>
+    <string name="home_hint_paused">Toca = reanudar · mantén = finalizar</string>
+    <string name="home_hint_releasing">Suelta para finalizar…</string>
+    <string name="home_permission_rationale">Se necesita el permiso de micrófono para grabar</string>
+    <string name="home_permission_open_settings">Abrir ajustes del sistema</string>
+    <string name="cd_theme_toggle">Cambiar tema</string>
+    <string name="cd_settings">Ajustes</string>
+    <string name="cd_record_button">Botón de grabar</string>
+
+    <!-- Library -->
+    <string name="library_title">Biblioteca</string>
+    <string name="library_count">%d grabaciones</string>
+    <string name="library_count_one">1 grabación</string>
+    <string name="library_search_hint">Buscar grabaciones</string>
+    <string name="library_sort">Orden</string>
+    <string name="library_sort_recent">Recientes</string>
+    <string name="library_sort_name">Nombre</string>
+    <string name="library_sort_duration">Duración</string>
+    <string name="library_filter_all">Todas</string>
+    <string name="library_empty">Aún no hay grabaciones</string>
+    <string name="cd_back">Atrás</string>
+    <string name="cd_play">Reproducir</string>
+
+    <!-- Detail -->
+    <string name="detail_edit">Editar</string>
+    <string name="detail_share">Compartir</string>
+    <string name="detail_rename">Renombrar</string>
+    <string name="detail_delete">Borrar</string>
+    <string name="detail_fine">Afinar</string>
+    <string name="detail_speed">Velocidad</string>
+    <string name="detail_rename_title">Renombrar grabación</string>
+    <string name="detail_delete_confirm_title">¿Borrar la grabación?</string>
+    <string name="detail_delete_confirm_msg">Esta acción no se puede deshacer.</string>
+    <string name="dialog_cancel">Cancelar</string>
+    <string name="dialog_ok">Aceptar</string>
+    <string name="cd_pause">Pausar</string>
+
+    <!-- Editor -->
+    <string name="editor_title">Editor</string>
+    <string name="editor_save">Guardar</string>
+    <string name="editor_saving">Guardando…</string>
+    <string name="editor_pointer">Puntero</string>
+    <string name="editor_selection">Selección %s</string>
+    <string name="editor_tool_trim">Recortar</string>
+    <string name="editor_tool_cut">Cortar</string>
+    <string name="editor_tool_markers">Capítulos</string>
+    <string name="editor_tool_volume">Volumen</string>
+    <string name="editor_tool_fade">Fundidos</string>
+    <string name="editor_trim_title">Recortar inicio y fin</string>
+    <string name="editor_trim_hint">Arrastra las guías naranjas sobre la onda para recortar el silencio de los extremos. Sólo se conservará la selección resaltada.</string>
+    <string name="editor_cut_title">Cortar fragmento</string>
+    <string name="editor_cut_hint">Marca una región y elimínala del centro de la pista. Los extremos se unen con un empalme suave.</string>
+    <string name="editor_cut_apply">Eliminar selección</string>
+    <string name="editor_markers_title">Marcadores y capítulos</string>
+    <string name="editor_markers_add">+ Añadir capítulo aquí</string>
+    <string name="editor_marker_default">Capítulo %d</string>
+    <string name="editor_volume_title">Volumen y normalización</string>
+    <string name="editor_volume_gain">Ganancia</string>
+    <string name="editor_volume_normalize">Normalizar a −1 dB</string>
+    <string name="editor_fade_title">Fundidos</string>
+    <string name="editor_fade_hint">Aplica fundido de entrada y salida para evitar clics al inicio y al final.</string>
+    <string name="editor_fade_in">Fundido de entrada</string>
+    <string name="editor_fade_out">Fundido de salida</string>
+    <string name="editor_loading">Preparando audio…</string>
+    <string name="cd_close">Cerrar</string>
+
+    <!-- Settings -->
+    <string name="settings_title">Ajustes</string>
+    <string name="settings_section_recording">Grabación</string>
+    <string name="settings_format">Formato</string>
+    <string name="settings_depth">Profundidad de bits</string>
+    <string name="settings_depth_na">16 bits (efectivo)</string>
+    <string name="settings_gain">Ganancia de entrada</string>
+    <string name="settings_mic">Micrófono</string>
+    <string name="settings_mic_builtin">Micrófono integrado</string>
+    <string name="settings_stereo">Grabación en estéreo</string>
+    <string name="settings_stereo_sub">Dos canales</string>
+    <string name="settings_section_interface">Interfaz</string>
+    <string name="settings_language">Idioma</string>
+    <string name="settings_theme">Tema</string>
+    <string name="settings_theme_dark">Oscuro</string>
+    <string name="settings_theme_light">Claro</string>
+    <string name="settings_hide_notification">Ocultar en la barra de notificaciones</string>
+    <string name="settings_hide_notification_sub">No mostrar que estás grabando (el sistema puede mostrar el indicador de micrófono)</string>
+    <string name="settings_autostart">Autoinicio de grabación</string>
+    <string name="settings_autostart_sub">Empezar al abrir la app</string>
+    <string name="settings_section_sync">Sincronizar</string>
+    <string name="settings_sync_protocol">Protocolo</string>
+    <string name="settings_sync_server">Servidor</string>
+    <string name="settings_sync_server_hint">p. ej. https://nube.ejemplo.net/dav</string>
+    <string name="settings_sync_user">Usuario</string>
+    <string name="settings_sync_password">Contraseña</string>
+    <string name="settings_sync_folder">Carpeta remota</string>
+    <string name="settings_sync_autoupload">Subida automática</string>
+    <string name="settings_sync_autoupload_sub">Al finalizar cada grabación</string>
+    <string name="settings_sync_test">Probar conexión</string>
+    <string name="settings_sync_testing">Probando…</string>
+    <string name="settings_sync_ok">Conexión correcta</string>
+    <string name="settings_sync_error">Error: %s</string>
+    <string name="settings_sync_not_configured">Sin configurar</string>
+
+    <!-- Recording / misc -->
+    <string name="recording_default_name">Grabación %d</string>
+    <string name="notification_channel">Grabación</string>
+    <string name="notification_recording">Grabando</string>
+    <string name="notification_paused">En pausa</string>
+    <string name="notification_action_pause">Pausar</string>
+    <string name="notification_action_resume">Reanudar</string>
+    <string name="notification_action_stop">Finalizar</string>
+    <string name="date_today">Hoy %s</string>
+    <string name="date_yesterday">Ayer %s</string>
+    <string name="date_now">Ahora mismo</string>
+    <string name="upload_notification">Subiendo grabación</string>
+</resources>
