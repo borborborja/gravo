@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
@@ -76,7 +77,7 @@ fun EditorScreen(
     val rec = recording ?: return
     val durationMs = rec.durationMs.coerceAtLeast(1)
 
-    Column(Modifier.fillMaxSize().background(colors.bg)) {
+    Column(Modifier.fillMaxSize().background(colors.bg).safeDrawingPadding()) {
         // cabecera
         Row(
             Modifier.fillMaxWidth().padding(horizontal = 22.dp).padding(top = 14.dp, bottom = 8.dp),

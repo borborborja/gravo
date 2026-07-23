@@ -20,6 +20,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -115,6 +116,7 @@ fun HomeScreen(
         Modifier
             .fillMaxSize()
             .background(colors.bg)
+            .safeDrawingPadding()
             .padding(horizontal = 22.dp)
             .padding(top = 8.dp, bottom = 22.dp),
     ) {
@@ -185,18 +187,18 @@ fun HomeScreen(
         ) {
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                 Text(
-                    stringResource(R.string.home_meter_title).uppercase(),
+                    stringResource(if (status == RecStatus.IDLE) R.string.home_meter_monitor else R.string.home_meter_title).uppercase(),
                     style = TextStyle(fontFamily = DmMono, fontSize = 10.sp, letterSpacing = 1.4.sp, color = colors.fg3),
                 )
                 Text(
                     "${peakDb.roundToInt()} dB",
                     style = TextStyle(
                         fontFamily = DmMono, fontWeight = FontWeight.Medium, fontSize = 11.sp,
-                        color = if (peakDb > -4f) RecordRed else colors.fg3,
+                        color = if (status != RecStatus.IDLE && peakDb > -4f) RecordRed else colors.fg3,
                     ),
                 )
             }
-            LevelMeterBars(levels, Modifier.fillMaxWidth().height(84.dp).padding(top = 12.dp))
+            LevelMeterBars(levels, Modifier.fillMaxWidth().height(84.dp).padding(top = 12.dp), muted = status == RecStatus.IDLE)
             Row(Modifier.fillMaxWidth().padding(top = 8.dp), horizontalArrangement = Arrangement.SpaceBetween) {
                 for (mark in listOf("-60", "-24", "-12", "-6")) {
                     Text(mark, style = TextStyle(fontFamily = DmMono, fontSize = 9.sp, color = colors.fg4))

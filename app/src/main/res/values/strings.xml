@@ -9,6 +9,7 @@
     <string name="home_status_paused">En pausa</string>
     <string name="home_status_permission">Permiso necesario</string>
     <string name="home_meter_title">Audímetro</string>
+    <string name="home_meter_monitor">Monitor · sin grabar</string>
     <string name="home_gain">Ganancia</string>
     <string name="home_depth">Profundidad</string>
     <string name="home_format">Formato</string>

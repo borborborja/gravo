@@ -128,7 +128,7 @@ fun RecordButton(
                     Box(Modifier.size(width = 9.dp, height = 34.dp).background(Color(0xFF08080C), RoundedCornerShape(2.dp)))
                 }
                 RecStatus.PAUSED -> Box(Modifier.size(34.dp).background(Color(0xFF08080C), CircleShape))
-                RecStatus.IDLE -> Box(Modifier.size(34.dp).background(Color(0xFF08080C), RoundedCornerShape(8.dp)))
+                RecStatus.IDLE -> {} // disco rojo liso = grabar
             }
         }
     }

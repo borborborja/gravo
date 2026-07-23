@@ -7,6 +7,7 @@ import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import com.gravo.grabadora.ui.theme.Accent
+import com.gravo.grabadora.ui.theme.GrabadoraTheme
 import com.gravo.grabadora.ui.theme.RecordRed
 import com.gravo.grabadora.ui.theme.WaveGreen
 
@@ -15,7 +16,8 @@ import com.gravo.grabadora.ui.theme.WaveGreen
  * naranja >0.6, rojo >0.86).
  */
 @Composable
-fun LevelMeterBars(levels: FloatArray, modifier: Modifier = Modifier) {
+fun LevelMeterBars(levels: FloatArray, modifier: Modifier = Modifier, muted: Boolean = false) {
+    val mutedColor = GrabadoraTheme.colors.fg3
     Canvas(modifier) {
         val n = levels.size
         if (n == 0) return@Canvas
@@ -25,6 +27,7 @@ fun LevelMeterBars(levels: FloatArray, modifier: Modifier = Modifier) {
             val v = levels[i]
             val h = (v * size.height).coerceAtLeast(2f * density)
             val color = when {
+                muted -> mutedColor
                 v > 0.86f -> RecordRed
                 v > 0.6f -> Accent
                 else -> WaveGreen
