@@ -9,6 +9,7 @@
     <string name="home_status_paused">Paused</string>
     <string name="home_status_permission">Permission needed</string>
     <string name="home_meter_title">Level meter</string>
+    <string name="home_meter_monitor">Monitor · not recording</string>
     <string name="home_gain">Gain</string>
     <string name="home_depth">Bit depth</string>
     <string name="home_format">Format</string>

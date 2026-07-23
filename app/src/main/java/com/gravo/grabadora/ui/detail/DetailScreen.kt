@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
@@ -82,7 +83,7 @@ fun DetailScreen(
     val durationMs = rec.durationMs.coerceAtLeast(1)
     val progress = (positionMs.toFloat() / durationMs).coerceIn(0f, 1f)
 
-    Column(Modifier.fillMaxSize().background(colors.bg).verticalScroll(rememberScrollState())) {
+    Column(Modifier.fillMaxSize().background(colors.bg).safeDrawingPadding().verticalScroll(rememberScrollState())) {
         // cabecera
         Row(
             Modifier.fillMaxWidth().padding(horizontal = 22.dp).padding(top = 14.dp, bottom = 8.dp),
