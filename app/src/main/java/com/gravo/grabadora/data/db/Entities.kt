@@ -1,6 +1,7 @@
 package com.gravo.grabadora.data.db
 
 import androidx.room.Entity
+import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.Junction
 import androidx.room.PrimaryKey
@@ -41,6 +42,25 @@ data class ChapterEntity(
     val recordingId: Long,
     val timeMs: Long,
     val name: String,
+)
+
+@Entity(
+    tableName = "transcripts",
+    foreignKeys = [ForeignKey(
+        entity = RecordingEntity::class,
+        parentColumns = ["id"],
+        childColumns = ["recordingId"],
+        onDelete = ForeignKey.CASCADE,
+    )],
+)
+data class TranscriptEntity(
+    @PrimaryKey val recordingId: Long,
+    val text: String,
+    val provider: String,
+    val model: String,
+    val language: String,
+    val createdAt: Long,
+    val updatedAt: Long,
 )
 
 data class RecordingWithTags(

@@ -10,6 +10,7 @@ import com.gravo.grabadora.audio.BitDepth
 import com.gravo.grabadora.audio.MicSelector
 import com.gravo.grabadora.audio.RecordFormat
 import com.gravo.grabadora.audio.RecordingSpec
+import com.gravo.grabadora.transcription.TranscriptionProviderId
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
@@ -30,6 +31,15 @@ data class AppSettings(
     val syncUser: String = "",
     val syncFolder: String = "Grabadora",
     val autoUpload: Boolean = false,
+    val transcriptionProvider: TranscriptionProviderId = TranscriptionProviderId.WHISPER,
+    val trWhisperEndpoint: String = TranscriptionProviderId.WHISPER.defaultEndpoint,
+    val trWhisperModel: String = TranscriptionProviderId.WHISPER.defaultModel,
+    val trGeminiEndpoint: String = TranscriptionProviderId.GEMINI.defaultEndpoint,
+    val trGeminiModel: String = TranscriptionProviderId.GEMINI.defaultModel,
+    val trDeepgramEndpoint: String = TranscriptionProviderId.DEEPGRAM.defaultEndpoint,
+    val trDeepgramModel: String = TranscriptionProviderId.DEEPGRAM.defaultModel,
+    val transcribeLanguage: String = "",
+    val autoTranscribe: Boolean = false,
 ) {
     val gainDb: Float get() = RecordingSpec.sliderToDb(gainSlider)
 
@@ -60,12 +70,49 @@ class SettingsRepository(private val context: Context) {
         val SYNC_FOLDER = stringPreferencesKey("sync_folder")
         val AUTO_UPLOAD = booleanPreferencesKey("auto_upload")
         val SYNC_PASS_ENC = stringPreferencesKey("sync_pass_enc")
+        val TR_PROVIDER = stringPreferencesKey("tr_provider")
+        val TR_WHISPER_ENDPOINT = stringPreferencesKey("tr_whisper_endpoint")
+        val TR_WHISPER_MODEL = stringPreferencesKey("tr_whisper_model")
+        val TR_GEMINI_ENDPOINT = stringPreferencesKey("tr_gemini_endpoint")
+        val TR_GEMINI_MODEL = stringPreferencesKey("tr_gemini_model")
+        val TR_DEEPGRAM_ENDPOINT = stringPreferencesKey("tr_deepgram_endpoint")
+        val TR_DEEPGRAM_MODEL = stringPreferencesKey("tr_deepgram_model")
+        val TR_LANGUAGE = stringPreferencesKey("tr_language")
+        val TR_AUTO = booleanPreferencesKey("tr_auto")
+        val TR_WHISPER_KEY_ENC = stringPreferencesKey("tr_whisper_key_enc")
+        val TR_GEMINI_KEY_ENC = stringPreferencesKey("tr_gemini_key_enc")
+        val TR_DEEPGRAM_KEY_ENC = stringPreferencesKey("tr_deepgram_key_enc")
     }
 
     /** Contraseña de sync cifrada (AES-GCM, clave en Keystore); nunca se expone en AppSettings. */
     val syncPasswordEnc: Flow<String> = context.dataStore.data.map { it[Keys.SYNC_PASS_ENC] ?: "" }
 
     suspend fun setSyncPasswordEnc(blob: String) = context.dataStore.edit { it[Keys.SYNC_PASS_ENC] = blob }
+
+    private fun keyEncKey(provider: TranscriptionProviderId) = when (provider) {
+        TranscriptionProviderId.WHISPER -> Keys.TR_WHISPER_KEY_ENC
+        TranscriptionProviderId.GEMINI -> Keys.TR_GEMINI_KEY_ENC
+        TranscriptionProviderId.DEEPGRAM -> Keys.TR_DEEPGRAM_KEY_ENC
+    }
+
+    /** Clave de API del proveedor cifrada (AES-GCM, clave en Keystore); nunca se expone en claro. */
+    fun transcriptionKeyEnc(provider: TranscriptionProviderId): Flow<String> =
+        context.dataStore.data.map { it[keyEncKey(provider)] ?: "" }
+
+    suspend fun setTranscriptionKeyEnc(provider: TranscriptionProviderId, blob: String) =
+        context.dataStore.edit { it[keyEncKey(provider)] = blob }
+
+    private fun endpointKey(provider: TranscriptionProviderId) = when (provider) {
+        TranscriptionProviderId.WHISPER -> Keys.TR_WHISPER_ENDPOINT
+        TranscriptionProviderId.GEMINI -> Keys.TR_GEMINI_ENDPOINT
+        TranscriptionProviderId.DEEPGRAM -> Keys.TR_DEEPGRAM_ENDPOINT
+    }
+
+    private fun modelKey(provider: TranscriptionProviderId) = when (provider) {
+        TranscriptionProviderId.WHISPER -> Keys.TR_WHISPER_MODEL
+        TranscriptionProviderId.GEMINI -> Keys.TR_GEMINI_MODEL
+        TranscriptionProviderId.DEEPGRAM -> Keys.TR_DEEPGRAM_MODEL
+    }
 
     val settings: Flow<AppSettings> = context.dataStore.data.map { p ->
         AppSettings(
@@ -88,6 +135,17 @@ class SettingsRepository(private val context: Context) {
             syncUser = p[Keys.SYNC_USER] ?: "",
             syncFolder = p[Keys.SYNC_FOLDER] ?: "Grabadora",
             autoUpload = p[Keys.AUTO_UPLOAD] ?: false,
+            transcriptionProvider = p[Keys.TR_PROVIDER]
+                ?.let { runCatching { TranscriptionProviderId.valueOf(it) }.getOrNull() }
+                ?: TranscriptionProviderId.WHISPER,
+            trWhisperEndpoint = p[Keys.TR_WHISPER_ENDPOINT] ?: TranscriptionProviderId.WHISPER.defaultEndpoint,
+            trWhisperModel = p[Keys.TR_WHISPER_MODEL] ?: TranscriptionProviderId.WHISPER.defaultModel,
+            trGeminiEndpoint = p[Keys.TR_GEMINI_ENDPOINT] ?: TranscriptionProviderId.GEMINI.defaultEndpoint,
+            trGeminiModel = p[Keys.TR_GEMINI_MODEL] ?: TranscriptionProviderId.GEMINI.defaultModel,
+            trDeepgramEndpoint = p[Keys.TR_DEEPGRAM_ENDPOINT] ?: TranscriptionProviderId.DEEPGRAM.defaultEndpoint,
+            trDeepgramModel = p[Keys.TR_DEEPGRAM_MODEL] ?: TranscriptionProviderId.DEEPGRAM.defaultModel,
+            transcribeLanguage = p[Keys.TR_LANGUAGE] ?: "",
+            autoTranscribe = p[Keys.TR_AUTO] ?: false,
         )
     }
 
@@ -105,4 +163,11 @@ class SettingsRepository(private val context: Context) {
     suspend fun setSyncUser(v: String) = context.dataStore.edit { it[Keys.SYNC_USER] = v.trim() }
     suspend fun setSyncFolder(v: String) = context.dataStore.edit { it[Keys.SYNC_FOLDER] = v.trim() }
     suspend fun setAutoUpload(v: Boolean) = context.dataStore.edit { it[Keys.AUTO_UPLOAD] = v }
+    suspend fun setTranscriptionProvider(v: TranscriptionProviderId) = context.dataStore.edit { it[Keys.TR_PROVIDER] = v.name }
+    suspend fun setTranscriptionEndpoint(provider: TranscriptionProviderId, v: String) =
+        context.dataStore.edit { it[endpointKey(provider)] = v.trim() }
+    suspend fun setTranscriptionModel(provider: TranscriptionProviderId, v: String) =
+        context.dataStore.edit { it[modelKey(provider)] = v.trim() }
+    suspend fun setTranscribeLanguage(v: String) = context.dataStore.edit { it[Keys.TR_LANGUAGE] = v }
+    suspend fun setAutoTranscribe(v: Boolean) = context.dataStore.edit { it[Keys.TR_AUTO] = v }
 }

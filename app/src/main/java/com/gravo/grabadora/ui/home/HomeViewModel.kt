@@ -59,6 +59,9 @@ class HomeViewModel(private val container: AppContainer) : ViewModel() {
                         container.syncManager.enqueueUpload(java.io.File(it.filePath))
                     }
                 }
+                if (settings.autoTranscribe) {
+                    container.transcriptionScheduler.enqueueAuto(id)
+                }
                 onSaved(id)
             }
         }

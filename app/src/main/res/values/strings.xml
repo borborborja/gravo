@@ -47,6 +47,7 @@
     <string name="detail_rename_title">Renombrar grabación</string>
     <string name="detail_delete_confirm_title">¿Borrar la grabación?</string>
     <string name="detail_delete_confirm_msg">Esta acción no se puede deshacer.</string>
+    <string name="detail_transcribe">Transcribir</string>
     <string name="dialog_cancel">Cancelar</string>
     <string name="dialog_ok">Aceptar</string>
     <string name="cd_pause">Pausar</string>
@@ -79,6 +80,23 @@
     <string name="editor_fade_out">Fundido de salida</string>
     <string name="editor_loading">Preparando audio…</string>
     <string name="cd_close">Cerrar</string>
+
+    <!-- Transcription -->
+    <string name="transcription_title">Transcripción</string>
+    <string name="transcription_transcribe">Transcribir</string>
+    <string name="transcription_transcribing">Transcribiendo…</string>
+    <string name="transcription_done">Transcripción completada</string>
+    <string name="transcription_save">Guardar</string>
+    <string name="transcription_copy">Copiar</string>
+    <string name="transcription_share">Compartir</string>
+    <string name="transcription_search_hint">Buscar en el texto</string>
+    <string name="transcription_text_hint">La transcripción aparecerá aquí</string>
+    <string name="transcription_error">Error</string>
+    <string name="transcription_transcript">Transcripción</string>
+    <string name="transcription_language_auto">Auto</string>
+    <string name="transcription_gemini_auto">Gemini detecta el idioma automáticamente.</string>
+    <string name="transcription_matches">%d coincidencias</string>
+    <string name="transcription_export_txt">Exportar .txt</string>
 
     <!-- Settings -->
     <string name="settings_title">Ajustes</string>
@@ -114,6 +132,15 @@
     <string name="settings_sync_ok">Conexión correcta</string>
     <string name="settings_sync_error">Error: %s</string>
     <string name="settings_sync_not_configured">Sin configurar</string>
+    <string name="settings_section_transcription">Transcripción</string>
+    <string name="settings_transcription_provider">Proveedor</string>
+    <string name="settings_transcription_endpoint">Endpoint</string>
+    <string name="settings_transcription_model">Modelo</string>
+    <string name="settings_transcription_api_key">Clave de API</string>
+    <string name="settings_transcription_language">Idioma por defecto</string>
+    <string name="settings_transcription_language_auto">Auto</string>
+    <string name="settings_transcription_auto">Transcribir al finalizar</string>
+    <string name="settings_transcription_auto_sub">Al terminar cada grabación</string>
 
     <!-- Recording / misc -->
     <string name="recording_default_name">Grabación %d</string>

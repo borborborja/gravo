@@ -72,3 +72,15 @@ interface ChapterDao {
     @Insert
     suspend fun insertAll(chapters: List<ChapterEntity>)
 }
+
+@Dao
+interface TranscriptDao {
+    @Query("SELECT * FROM transcripts WHERE recordingId = :recordingId")
+    fun observeById(recordingId: Long): Flow<TranscriptEntity?>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun upsert(t: TranscriptEntity)
+
+    @Query("DELETE FROM transcripts WHERE recordingId = :id")
+    suspend fun delete(id: Long)
+}

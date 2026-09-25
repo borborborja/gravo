@@ -24,6 +24,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material.icons.automirrored.outlined.Subject
 import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material.icons.outlined.Share
@@ -68,6 +69,7 @@ fun DetailScreen(
     viewModel: DetailViewModel,
     onBack: () -> Unit,
     onOpenEditor: (Long) -> Unit,
+    onOpenTranscription: (Long) -> Unit,
 ) {
     val colors = GrabadoraTheme.colors
     val context = LocalContext.current
@@ -233,6 +235,22 @@ fun DetailScreen(
 
         // acciones
         Column(Modifier.fillMaxWidth().padding(horizontal = 18.dp).padding(bottom = 22.dp), verticalArrangement = Arrangement.spacedBy(9.dp)) {
+            Row(
+                Modifier
+                    .fillMaxWidth()
+                    .background(colors.sf2, RoundedCornerShape(13.dp))
+                    .border(1.dp, colors.bd3, RoundedCornerShape(13.dp))
+                    .clickable(remember { MutableInteractionSource() }, null) { onOpenTranscription(rec.id) }
+                    .padding(15.dp),
+                horizontalArrangement = Arrangement.spacedBy(9.dp, Alignment.CenterHorizontally),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Icon(Icons.AutoMirrored.Outlined.Subject, null, Modifier.size(19.dp), tint = Accent)
+                Text(
+                    stringResource(R.string.detail_transcribe),
+                    style = TextStyle(fontFamily = DmSans, fontWeight = FontWeight.SemiBold, fontSize = 14.sp, color = colors.fg1),
+                )
+            }
             Row(
                 Modifier
                     .fillMaxWidth()

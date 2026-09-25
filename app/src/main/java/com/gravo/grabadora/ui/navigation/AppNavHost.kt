@@ -1,6 +1,8 @@
 package com.gravo.grabadora.ui.navigation
 
+import android.content.Intent
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -18,6 +20,8 @@ import com.gravo.grabadora.ui.library.LibraryScreen
 import com.gravo.grabadora.ui.library.LibraryViewModel
 import com.gravo.grabadora.ui.settings.SettingsScreen
 import com.gravo.grabadora.ui.settings.SettingsViewModel
+import com.gravo.grabadora.ui.transcription.TranscriptionScreen
+import com.gravo.grabadora.ui.transcription.TranscriptionViewModel
 
 object Routes {
     const val HOME = "home"
@@ -25,9 +29,11 @@ object Routes {
     const val SETTINGS = "settings"
     const val DETAIL = "detail/{id}"
     const val EDITOR = "editor/{id}"
+    const val TRANSCRIPTION = "transcription/{id}"
 
     fun detail(id: Long) = "detail/$id"
     fun editor(id: Long) = "editor/$id"
+    fun transcription(id: Long) = "transcription/$id"
 }
 
 @Composable
@@ -61,12 +67,33 @@ fun AppNavHost(navController: NavHostController, container: AppContainer) {
                 viewModel = vm,
                 onBack = { navController.popBackStack() },
                 onOpenEditor = { navController.navigate(Routes.editor(it)) },
+                onOpenTranscription = { navController.navigate(Routes.transcription(it)) },
             )
         }
         composable(Routes.EDITOR, arguments = listOf(navArgument("id") { type = NavType.LongType })) { entry ->
             val id = entry.arguments?.getLong("id") ?: return@composable
             val vm: EditorViewModel = viewModel(key = "editor_$id", factory = EditorViewModel.factory(container, id))
             EditorScreen(viewModel = vm, onClose = { navController.popBackStack() })
+        }
+        composable(Routes.TRANSCRIPTION, arguments = listOf(navArgument("id") { type = NavType.LongType })) { entry ->
+            val id = entry.arguments?.getLong("id") ?: return@composable
+            val vm: TranscriptionViewModel = viewModel(key = "transcription_$id", factory = TranscriptionViewModel.factory(container, id))
+            val context = LocalContext.current
+            TranscriptionScreen(
+                viewModel = vm,
+                onBack = { navController.popBackStack() },
+                onShareText = { text ->
+                    context.startActivity(
+                        Intent.createChooser(
+                            Intent(Intent.ACTION_SEND).apply {
+                                type = "text/plain"
+                                putExtra(Intent.EXTRA_TEXT, text)
+                            },
+                            null,
+                        ),
+                    )
+                },
+            )
         }
     }
 }
