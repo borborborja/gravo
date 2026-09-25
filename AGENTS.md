@@ -32,6 +32,12 @@ Kotlin 2.1 + Jetpack Compose (BOM), minSdk 26, compile/target 35, AGP 8.7, Gradl
   procesa y recodifica al formato original.
 - **Sync** (`sync/`): WebDAV (OkHttp), FTP (commons-net), SFTP (JSch); credenciales con
   AES-GCM + Android Keystore; subida automática al finalizar con WorkManager.
+- **Transcripción** (`transcription/`): contrato puro `TranscriptionProvider` + 3
+  implementaciones (Whisper/OpenAI-compatible, Gemini, Deepgram); `TranscriptionManager`
+  orquesta adaptación de audio, llamada y persistencia; auto opcional con
+  `TranscriptionWorker` + `TranscriptionScheduler` (WorkManager). El paquete es JVM-puro
+  (sin tipos Android) salvo `AudioTranscoder`/worker; tabla Room `transcripts` con FK
+  CASCADE y migración v1→v2.
 - Datos: Room vía KSP (`data/db/`), ajustes en DataStore (`data/settings/`).
 
 ## Tests
