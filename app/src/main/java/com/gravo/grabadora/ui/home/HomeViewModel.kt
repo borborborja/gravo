@@ -26,15 +26,16 @@ class HomeViewModel(private val container: AppContainer) : ViewModel() {
     val levels: StateFlow<FloatArray> = controller.meter.levels
     val peakDb: StateFlow<Float> = controller.meter.peakDb
 
-    /** Llamado cuando la Home es visible y hay permiso de micrófono. */
-    fun startMonitoring() {
+    /**
+     * Activa o desactiva el audímetro. Con `meterPreview=false` solo se enciende
+     * mientras se graba; con `true`, también en reposo.
+     */
+    fun setMonitoring(enabled: Boolean) {
         viewModelScope.launch {
             val s = settings.first()
-            controller.startMonitoring(s.toSpec(), s.micId)
+            controller.setMonitoring(enabled, s.toSpec(), s.micId)
         }
     }
-
-    fun stopMonitoring() = controller.stopMonitoring()
 
     fun onRecordTap() {
         viewModelScope.launch {
@@ -49,7 +50,17 @@ class HomeViewModel(private val container: AppContainer) : ViewModel() {
     }
 
     /** Mantener pulsado completado → finalizar y navegar al detalle. */
-    fun onRecordHoldComplete(defaultNameTemplate: String, onSaved: (Long) -> Unit) {
+    fun onRecordHoldComplete(defaultNameTemplate: String, onSaved: (Long) -> Unit) =
+        finishAndSave(defaultNameTemplate, onSaved)
+
+    /** Toque de "parar" (modo dos botones) → finalizar y navegar al detalle. */
+    fun onRecordStop(defaultNameTemplate: String, onSaved: (Long) -> Unit) =
+        finishAndSave(defaultNameTemplate, onSaved)
+
+    /** Pausa/reanudar desde el botón pequeño (solo tiene efecto si hay grabación). */
+    fun togglePause() = controller.togglePause()
+
+    private fun finishAndSave(defaultNameTemplate: String, onSaved: (Long) -> Unit) {
         viewModelScope.launch {
             val settings = settingsRepo.settings.first()
             val id = controller.finishRecording(defaultNameTemplate)

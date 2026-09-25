@@ -39,7 +39,7 @@ class RecordingController(
     private var spec: RecordingSpec = RecordingSpec()
     private var outputFile: File? = null
     private var framesWritten = 0L
-    private var monitorRefs = 0
+    private var monitoring = false
 
     private val engine = AudioCaptureEngine { buffer, n ->
         meter.process(buffer, n)
@@ -57,18 +57,17 @@ class RecordingController(
         scope.launch { mutex.withLock { abortLocked() } }
     }
 
-    /** La Home pide monitorización del audímetro mientras es visible. */
-    fun startMonitoring(settingsSpec: RecordingSpec, micId: Int) {
+    /**
+     * Enciende/apaga la monitorización del audímetro (preview) de forma idempotente.
+     * Si se apaga mientras se graba no corta el motor: la grabación lo necesita.
+     */
+    fun setMonitoring(enabled: Boolean, settingsSpec: RecordingSpec, micId: Int) {
         synchronized(this) {
-            monitorRefs++
-            ensureEngine(settingsSpec, micId)
-        }
-    }
-
-    fun stopMonitoring() {
-        synchronized(this) {
-            monitorRefs--
-            if (monitorRefs <= 0 && _status.value == RecStatus.IDLE) {
+            if (enabled == monitoring) return
+            monitoring = enabled
+            if (enabled) {
+                ensureEngine(settingsSpec, micId)
+            } else if (_status.value == RecStatus.IDLE) {
                 engine.stop()
                 meter.reset()
             }
@@ -150,7 +149,7 @@ class RecordingController(
     private fun stopServiceAndMaybeEngine() {
         context.stopService(Intent(context, RecordingService::class.java))
         synchronized(this) {
-            if (monitorRefs <= 0) {
+            if (!monitoring) {
                 engine.stop()
                 meter.reset()
             }

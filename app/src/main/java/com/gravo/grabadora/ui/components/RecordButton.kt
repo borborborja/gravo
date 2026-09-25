@@ -43,6 +43,8 @@ fun RecordButton(
     onTap: () -> Unit,
     onHoldComplete: () -> Unit,
     onPressingChange: (Boolean) -> Unit = {},
+    holdEnabled: Boolean = true,
+    showStop: Boolean = false,
     modifier: Modifier = Modifier,
 ) {
     val colors = GrabadoraTheme.colors
@@ -50,12 +52,12 @@ fun RecordButton(
     var progress by remember { mutableFloatStateOf(0f) }
     var holdFired by remember { mutableStateOf(false) }
 
-    // el anillo solo se rellena si ya hay grabación en curso (idle: toque simple)
-    val holdEnabled = status != RecStatus.IDLE
+    // el anillo solo se rellena si el modo permite mantener y ya hay grabación en curso
+    val holdActive = holdEnabled && status != RecStatus.IDLE
 
-    LaunchedEffect(pressing, holdEnabled) {
-        onPressingChange(pressing && holdEnabled)
-        if (pressing && holdEnabled) {
+    LaunchedEffect(pressing, holdActive) {
+        onPressingChange(pressing && holdActive)
+        if (pressing && holdActive) {
             holdFired = false
             val start = System.currentTimeMillis()
             while (pressing) {
@@ -121,14 +123,19 @@ fun RecordButton(
                 .background(if (status == RecStatus.RECORDING) Yellow else RecordRed, CircleShape),
             contentAlignment = Alignment.Center,
         ) {
-            when (status) {
-                RecStatus.RECORDING -> Row {
-                    Box(Modifier.size(width = 9.dp, height = 34.dp).background(Color(0xFF08080C), RoundedCornerShape(2.dp)))
-                    Box(Modifier.width(8.dp))
-                    Box(Modifier.size(width = 9.dp, height = 34.dp).background(Color(0xFF08080C), RoundedCornerShape(2.dp)))
+            if (showStop) {
+                // modo dos botones: el botón grande finaliza
+                Box(Modifier.size(30.dp).background(Color(0xFF08080C), RoundedCornerShape(6.dp)))
+            } else {
+                when (status) {
+                    RecStatus.RECORDING -> Row {
+                        Box(Modifier.size(width = 9.dp, height = 34.dp).background(Color(0xFF08080C), RoundedCornerShape(2.dp)))
+                        Box(Modifier.width(8.dp))
+                        Box(Modifier.size(width = 9.dp, height = 34.dp).background(Color(0xFF08080C), RoundedCornerShape(2.dp)))
+                    }
+                    RecStatus.PAUSED -> Box(Modifier.size(34.dp).background(Color(0xFF08080C), CircleShape))
+                    RecStatus.IDLE -> {} // disco rojo liso = grabar
                 }
-                RecStatus.PAUSED -> Box(Modifier.size(34.dp).background(Color(0xFF08080C), CircleShape))
-                RecStatus.IDLE -> {} // disco rojo liso = grabar
             }
         }
     }

@@ -34,6 +34,7 @@ import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -55,7 +56,9 @@ import com.gravo.grabadora.audio.BitDepth
 import com.gravo.grabadora.audio.LevelMeter
 import com.gravo.grabadora.audio.RecStatus
 import com.gravo.grabadora.audio.RecordFormat
+import com.gravo.grabadora.data.settings.RecordStopMode
 import com.gravo.grabadora.ui.components.LevelMeterBars
+import com.gravo.grabadora.ui.components.PauseResumeButton
 import com.gravo.grabadora.ui.components.RecordButton
 import com.gravo.grabadora.ui.components.SegChip
 import com.gravo.grabadora.ui.theme.Accent
@@ -96,7 +99,6 @@ fun HomeScreen(
     ) { result ->
         hasMicPermission = result[Manifest.permission.RECORD_AUDIO] == true
         permissionDenied = !hasMicPermission
-        if (hasMicPermission) viewModel.startMonitoring()
     }
 
     fun requestPermissions() {
@@ -105,10 +107,15 @@ fun HomeScreen(
         permissionLauncher.launch(perms.toTypedArray())
     }
 
-    LifecycleResumeEffect(hasMicPermission) {
-        if (hasMicPermission) viewModel.startMonitoring()
-        onPauseOrDispose { if (hasMicPermission) viewModel.stopMonitoring() }
+    var resumed by remember { mutableStateOf(true) }
+    LifecycleResumeEffect(Unit) {
+        resumed = true
+        onPauseOrDispose { resumed = false }
     }
+
+    // Con meterPreview=false el audímetro solo se enciende mientras se graba.
+    val shouldMonitor = hasMicPermission && resumed && (settings.meterPreview || status != RecStatus.IDLE)
+    LaunchedEffect(shouldMonitor) { viewModel.setMonitoring(shouldMonitor) }
 
     val defaultNameTemplate = stringResource(R.string.recording_default_name)
 
@@ -205,6 +212,13 @@ fun HomeScreen(
                 }
                 Text("0dB", style = TextStyle(fontFamily = DmMono, fontSize = 9.sp, color = Accent))
             }
+            if (!settings.meterPreview && status == RecStatus.IDLE) {
+                Text(
+                    stringResource(R.string.home_meter_inactive),
+                    style = TextStyle(fontFamily = DmSans, fontSize = 10.sp, color = colors.fg4),
+                    modifier = Modifier.padding(top = 8.dp),
+                )
+            }
         }
 
         // controles rápidos
@@ -277,17 +291,42 @@ fun HomeScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(10.dp),
         ) {
-            RecordButton(
-                status = status,
-                onTap = {
-                    if (!hasMicPermission) requestPermissions() else viewModel.onRecordTap()
-                },
-                onHoldComplete = { viewModel.onRecordHoldComplete(defaultNameTemplate, onRecordingSaved) },
-                onPressingChange = { pressing = it },
-            )
+            val mode = settings.recordStopMode
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(14.dp),
+            ) {
+                if (mode == RecordStopMode.TWO_BUTTONS && status != RecStatus.IDLE) {
+                    PauseResumeButton(
+                        status = status,
+                        onPause = { viewModel.togglePause() },
+                        onResume = { viewModel.togglePause() },
+                    )
+                }
+                RecordButton(
+                    status = status,
+                    holdEnabled = RecordTapLogic.holdEnabled(mode),
+                    showStop = mode == RecordStopMode.TWO_BUTTONS && status != RecStatus.IDLE,
+                    onTap = {
+                        if (!hasMicPermission) {
+                            requestPermissions()
+                        } else {
+                            when (RecordTapLogic.tapAction(status, mode)) {
+                                RecordTapAction.START -> viewModel.onRecordTap()
+                                RecordTapAction.PAUSE_TOGGLE -> viewModel.togglePause()
+                                RecordTapAction.STOP -> viewModel.onRecordStop(defaultNameTemplate, onRecordingSaved)
+                            }
+                        }
+                    },
+                    onHoldComplete = { viewModel.onRecordHoldComplete(defaultNameTemplate, onRecordingSaved) },
+                    onPressingChange = { pressing = it },
+                )
+            }
             val hint = when {
                 !hasMicPermission && permissionDenied -> stringResource(R.string.home_permission_rationale)
                 pressing -> stringResource(R.string.home_hint_releasing)
+                status == RecStatus.RECORDING && mode == RecordStopMode.TWO_BUTTONS -> stringResource(R.string.home_hint_two_recording)
+                status == RecStatus.PAUSED && mode == RecordStopMode.TWO_BUTTONS -> stringResource(R.string.home_hint_two_paused)
                 status == RecStatus.RECORDING -> stringResource(R.string.home_hint_recording)
                 status == RecStatus.PAUSED -> stringResource(R.string.home_hint_paused)
                 else -> stringResource(R.string.home_hint_idle)
