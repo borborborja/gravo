@@ -154,4 +154,14 @@
     <string name="date_yesterday">Ayer %s</string>
     <string name="date_now">Ahora mismo</string>
     <string name="upload_notification">Subiendo grabación</string>
+    <string name="settings_meter_preview">Vista previa del audímetro</string>
+    <string name="settings_meter_preview_sub">Mostrar el nivel antes de grabar</string>
+    <string name="settings_stop_mode">Botón de grabación</string>
+    <string name="settings_stop_mode_two">Dos botones</string>
+    <string name="settings_stop_mode_hold">Mantener para parar</string>
+    <string name="home_hint_two_recording">Toca = parar · el pequeño = pausa</string>
+    <string name="home_hint_two_paused">Toca = parar · el pequeño = reanudar</string>
+    <string name="home_meter_inactive">El audímetro se activa al grabar</string>
+    <string name="cd_resume_small">Reanudar</string>
+    <string name="cd_stop">Parar</string>
 </resources>

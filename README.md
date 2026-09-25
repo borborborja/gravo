@@ -7,7 +7,9 @@ App Android de grabación de audio basada en la maqueta de claude.ai/design
 
 - **Home**: audímetro en vivo (28 barras, pico en dBFS), cronómetro, ganancia de entrada
   (−25..+25 dB), profundidad 16/24/32 bits, formato rápido, botón de grabar con anillo
-  de progreso (toque = grabar/pausar; mantener 850 ms = finalizar).
+  de progreso. En Ajustes se elige si el audímetro muestra **vista previa** antes de grabar
+  o se enciende **solo al grabar**, y el modo del botón: **dos botones** (grande = iniciar/parar
+  y uno pequeño = pausa/reanudar) o **mantener para parar** (toque = pausar; mantener 850 ms = finalizar).
 - **Formatos reales**: WAV (16/24-bit PCM o float32), M4A/AAC (MediaCodec),
   OGG/Opus (MediaCodec, Android 10+), **MP3 (libmp3lame 3.100 vendorizada)** y
   **FLAC (libFLAC 1.4.3 vendorizada)**, compiladas con el NDK para arm64-v8a,

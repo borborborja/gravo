@@ -51,6 +51,7 @@ import com.gravo.grabadora.audio.BitDepth
 import com.gravo.grabadora.audio.MicSelector
 import com.gravo.grabadora.audio.RecordFormat
 import com.gravo.grabadora.audio.RecordingSpec
+import com.gravo.grabadora.data.settings.RecordStopMode
 import com.gravo.grabadora.data.settings.SyncProtocol
 import com.gravo.grabadora.transcription.TranscriptionProviderId
 import com.gravo.grabadora.ui.components.BackButton
@@ -177,13 +178,36 @@ fun SettingsScreen(viewModel: SettingsViewModel, onBack: () -> Unit) {
                         }
                     }
                 }
-                SettingBlock(divider = false, onClick = { viewModel.setStereo(!settings.stereo) }) {
+                SettingBlock(divider = true, onClick = { viewModel.setStereo(!settings.stereo) }) {
                     Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
                         Column(Modifier.weight(1f)) {
                             Label(stringResource(R.string.settings_stereo))
                             Sub(stringResource(R.string.settings_stereo_sub))
                         }
                         GravoSwitch(settings.stereo, { viewModel.setStereo(!settings.stereo) })
+                    }
+                }
+                SettingBlock(divider = true, onClick = { viewModel.setMeterPreview(!settings.meterPreview) }) {
+                    Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+                        Column(Modifier.weight(1f).padding(end = 14.dp)) {
+                            Label(stringResource(R.string.settings_meter_preview))
+                            Sub(stringResource(R.string.settings_meter_preview_sub))
+                        }
+                        GravoSwitch(settings.meterPreview, { viewModel.setMeterPreview(!settings.meterPreview) })
+                    }
+                }
+                SettingBlock(divider = false) {
+                    Label(stringResource(R.string.settings_stop_mode))
+                    Row(Modifier.padding(top = 10.dp), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                        for (mode in RecordStopMode.entries) {
+                            SegChip(
+                                mode.label,
+                                settings.recordStopMode == mode,
+                                { viewModel.setRecordStopMode(mode) },
+                                mono = false,
+                                horizontalPadding = 11,
+                            )
+                        }
                     }
                 }
             }

@@ -11,6 +11,7 @@ import com.gravo.grabadora.audio.MicOption
 import com.gravo.grabadora.audio.MicSelector
 import com.gravo.grabadora.audio.RecordFormat
 import com.gravo.grabadora.data.settings.AppSettings
+import com.gravo.grabadora.data.settings.RecordStopMode
 import com.gravo.grabadora.data.settings.SyncProtocol
 import com.gravo.grabadora.transcription.TranscriptionProviderId
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -71,6 +72,8 @@ class SettingsViewModel(private val container: AppContainer) : ViewModel() {
         launchSet { repo.setTranscriptionModel(provider, v) }
     fun setTranscribeLanguage(v: String) = launchSet { repo.setTranscribeLanguage(v) }
     fun setAutoTranscribe(v: Boolean) = launchSet { repo.setAutoTranscribe(v) }
+    fun setMeterPreview(v: Boolean) = launchSet { repo.setMeterPreview(v) }
+    fun setRecordStopMode(v: RecordStopMode) = launchSet { repo.setRecordStopMode(v) }
 
     fun setTranscriptionKey(provider: TranscriptionProviderId, plain: String) {
         viewModelScope.launch {

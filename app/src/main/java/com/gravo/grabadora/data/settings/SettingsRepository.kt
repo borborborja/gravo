@@ -16,6 +16,15 @@ import kotlinx.coroutines.flow.map
 
 enum class SyncProtocol(val label: String) { WEBDAV("WebDAV"), FTP("FTP"), SFTP("SFTP") }
 
+/** Cómo se finaliza una grabación desde el botón grande de la Home. */
+enum class RecordStopMode(val label: String) {
+    /** Botón grande inicia/para; botón pequeño pausa/reanuda. */
+    TWO_BUTTONS("Dos botones"),
+
+    /** Toque pausa/reanuda; mantener 850 ms finaliza. */
+    HOLD("Mantener para parar"),
+}
+
 data class AppSettings(
     val format: RecordFormat = RecordFormat.WAV,
     val depth: BitDepth = BitDepth.B24,
@@ -40,6 +49,9 @@ data class AppSettings(
     val trDeepgramModel: String = TranscriptionProviderId.DEEPGRAM.defaultModel,
     val transcribeLanguage: String = "",
     val autoTranscribe: Boolean = false,
+    /** Si es true el audímetro monitoriza antes de grabar; si no, solo mientras se graba. */
+    val meterPreview: Boolean = false,
+    val recordStopMode: RecordStopMode = RecordStopMode.TWO_BUTTONS,
 ) {
     val gainDb: Float get() = RecordingSpec.sliderToDb(gainSlider)
 
@@ -82,6 +94,8 @@ class SettingsRepository(private val context: Context) {
         val TR_WHISPER_KEY_ENC = stringPreferencesKey("tr_whisper_key_enc")
         val TR_GEMINI_KEY_ENC = stringPreferencesKey("tr_gemini_key_enc")
         val TR_DEEPGRAM_KEY_ENC = stringPreferencesKey("tr_deepgram_key_enc")
+        val METER_PREVIEW = booleanPreferencesKey("meter_preview")
+        val STOP_MODE = stringPreferencesKey("stop_mode")
     }
 
     /** Contraseña de sync cifrada (AES-GCM, clave en Keystore); nunca se expone en AppSettings. */
@@ -146,6 +160,9 @@ class SettingsRepository(private val context: Context) {
             trDeepgramModel = p[Keys.TR_DEEPGRAM_MODEL] ?: TranscriptionProviderId.DEEPGRAM.defaultModel,
             transcribeLanguage = p[Keys.TR_LANGUAGE] ?: "",
             autoTranscribe = p[Keys.TR_AUTO] ?: false,
+            meterPreview = p[Keys.METER_PREVIEW] ?: false,
+            recordStopMode = p[Keys.STOP_MODE]?.let { runCatching { RecordStopMode.valueOf(it) }.getOrNull() }
+                ?: RecordStopMode.TWO_BUTTONS,
         )
     }
 
@@ -170,4 +187,6 @@ class SettingsRepository(private val context: Context) {
         context.dataStore.edit { it[modelKey(provider)] = v.trim() }
     suspend fun setTranscribeLanguage(v: String) = context.dataStore.edit { it[Keys.TR_LANGUAGE] = v }
     suspend fun setAutoTranscribe(v: Boolean) = context.dataStore.edit { it[Keys.TR_AUTO] = v }
+    suspend fun setMeterPreview(v: Boolean) = context.dataStore.edit { it[Keys.METER_PREVIEW] = v }
+    suspend fun setRecordStopMode(v: RecordStopMode) = context.dataStore.edit { it[Keys.STOP_MODE] = v.name }
 }

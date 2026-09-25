@@ -154,4 +154,14 @@
     <string name="date_yesterday">Yesterday %s</string>
     <string name="date_now">Just now</string>
     <string name="upload_notification">Uploading recording</string>
+    <string name="settings_meter_preview">Level meter preview</string>
+    <string name="settings_meter_preview_sub">Show the level before recording</string>
+    <string name="settings_stop_mode">Record button</string>
+    <string name="settings_stop_mode_two">Two buttons</string>
+    <string name="settings_stop_mode_hold">Hold to stop</string>
+    <string name="home_hint_two_recording">Tap = stop · small = pause</string>
+    <string name="home_hint_two_paused">Tap = stop · small = resume</string>
+    <string name="home_meter_inactive">The meter turns on while recording</string>
+    <string name="cd_resume_small">Resume</string>
+    <string name="cd_stop">Stop</string>
 </resources>
