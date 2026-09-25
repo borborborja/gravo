@@ -52,6 +52,7 @@ import com.gravo.grabadora.audio.MicSelector
 import com.gravo.grabadora.audio.RecordFormat
 import com.gravo.grabadora.audio.RecordingSpec
 import com.gravo.grabadora.data.settings.SyncProtocol
+import com.gravo.grabadora.transcription.TranscriptionProviderId
 import com.gravo.grabadora.ui.components.BackButton
 import com.gravo.grabadora.ui.components.GravoSwitch
 import com.gravo.grabadora.ui.components.SegChip
@@ -310,6 +311,82 @@ fun SettingsScreen(viewModel: SettingsViewModel, onBack: () -> Unit) {
                         label,
                         style = TextStyle(fontFamily = DmSans, fontWeight = FontWeight.SemiBold, fontSize = 13.sp, color = color),
                     )
+                }
+            }
+
+            // ============ TRANSCRIPCIÓN ============
+            val provider = settings.transcriptionProvider
+            Section(stringResource(R.string.settings_section_transcription)) {
+                SettingBlock(divider = true) {
+                    Label(stringResource(R.string.settings_transcription_provider))
+                    Row(Modifier.padding(top = 10.dp), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                        for (p in TranscriptionProviderId.entries) {
+                            SegChip(p.label, provider == p, { viewModel.setTranscriptionProvider(p) }, horizontalPadding = 11)
+                        }
+                    }
+                }
+                SettingBlock(divider = true) {
+                    val endpoint = when (provider) {
+                        TranscriptionProviderId.WHISPER -> settings.trWhisperEndpoint
+                        TranscriptionProviderId.GEMINI -> settings.trGeminiEndpoint
+                        TranscriptionProviderId.DEEPGRAM -> settings.trDeepgramEndpoint
+                    }
+                    var value by remember(endpoint) { mutableStateOf(endpoint) }
+                    Label(stringResource(R.string.settings_transcription_endpoint))
+                    SyncField(
+                        value = value,
+                        onValueChange = { value = it },
+                        onDone = { viewModel.setTranscriptionEndpoint(provider, value) },
+                    )
+                }
+                SettingBlock(divider = true) {
+                    val model = when (provider) {
+                        TranscriptionProviderId.WHISPER -> settings.trWhisperModel
+                        TranscriptionProviderId.GEMINI -> settings.trGeminiModel
+                        TranscriptionProviderId.DEEPGRAM -> settings.trDeepgramModel
+                    }
+                    var value by remember(model) { mutableStateOf(model) }
+                    Label(stringResource(R.string.settings_transcription_model))
+                    SyncField(
+                        value = value,
+                        onValueChange = { value = it },
+                        onDone = { viewModel.setTranscriptionModel(provider, value) },
+                    )
+                }
+                SettingBlock(divider = true) {
+                    var key by remember(provider) { mutableStateOf("") }
+                    val hasKey by viewModel.hasTranscriptionKey.collectAsState()
+                    Label(stringResource(R.string.settings_transcription_api_key))
+                    SyncField(
+                        value = key,
+                        onValueChange = { key = it },
+                        onDone = { viewModel.setTranscriptionKey(provider, key) },
+                        password = true,
+                        placeholder = if (provider in hasKey) "••••••••" else "",
+                    )
+                }
+                SettingBlock(divider = true) {
+                    Label(stringResource(R.string.settings_transcription_language))
+                    Row(Modifier.padding(top = 10.dp), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                        SegChip(
+                            stringResource(R.string.settings_transcription_language_auto),
+                            settings.transcribeLanguage.isEmpty(),
+                            { viewModel.setTranscribeLanguage("") },
+                            mono = false,
+                        )
+                        for (lang in listOf("es", "en", "fr", "de", "it", "pt")) {
+                            SegChip(lang, settings.transcribeLanguage == lang, { viewModel.setTranscribeLanguage(lang) }, mono = false)
+                        }
+                    }
+                }
+                SettingBlock(divider = false, onClick = { viewModel.setAutoTranscribe(!settings.autoTranscribe) }) {
+                    Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+                        Column(Modifier.weight(1f)) {
+                            Label(stringResource(R.string.settings_transcription_auto))
+                            Sub(stringResource(R.string.settings_transcription_auto_sub))
+                        }
+                        GravoSwitch(settings.autoTranscribe, { viewModel.setAutoTranscribe(!settings.autoTranscribe) })
+                    }
                 }
             }
         }

@@ -24,6 +24,13 @@ App Android de grabación de audio basada en la maqueta de claude.ai/design
   notificación discreta, autoinicio, y **sincronización real por WebDAV, FTP y SFTP**
   con credenciales cifradas (AES-GCM + Android Keystore), «Probar conexión» y subida
   automática al finalizar (WorkManager).
+- **Transcripción**: convierte cualquier grabación a texto con tres proveedores
+  configurables — **Whisper (OpenAI-compatible), Gemini 3.5 Transcribe y Deepgram** —,
+  cada uno con endpoint y modelo propios y su **clave de API cifrada** (AES-GCM +
+  Android Keystore). El texto aparece en una **pantalla dedicada editable y con
+  búsqueda**, con **selector de idioma** (o Auto) antes de lanzar; el audio se adapta
+  automáticamente (original → MP3 mono 64 kbps → troceado) según lo que admita el
+  proveedor.
 
 ## Compilar
 

@@ -47,6 +47,7 @@
     <string name="detail_rename_title">Rename recording</string>
     <string name="detail_delete_confirm_title">Delete recording?</string>
     <string name="detail_delete_confirm_msg">This action cannot be undone.</string>
+    <string name="detail_transcribe">Transcribe</string>
     <string name="dialog_cancel">Cancel</string>
     <string name="dialog_ok">OK</string>
     <string name="cd_pause">Pause</string>
@@ -79,6 +80,23 @@
     <string name="editor_fade_out">Fade out</string>
     <string name="editor_loading">Preparing audio…</string>
     <string name="cd_close">Close</string>
+
+    <!-- Transcription -->
+    <string name="transcription_title">Transcription</string>
+    <string name="transcription_transcribe">Transcribe</string>
+    <string name="transcription_transcribing">Transcribing…</string>
+    <string name="transcription_done">Transcription complete</string>
+    <string name="transcription_save">Save</string>
+    <string name="transcription_copy">Copy</string>
+    <string name="transcription_share">Share</string>
+    <string name="transcription_search_hint">Search text</string>
+    <string name="transcription_text_hint">The transcript will appear here</string>
+    <string name="transcription_error">Error</string>
+    <string name="transcription_transcript">Transcript</string>
+    <string name="transcription_language_auto">Auto</string>
+    <string name="transcription_gemini_auto">Gemini auto-detects the language.</string>
+    <string name="transcription_matches">%d matches</string>
+    <string name="transcription_export_txt">Export .txt</string>
 
     <!-- Settings -->
     <string name="settings_title">Settings</string>
@@ -114,6 +132,15 @@
     <string name="settings_sync_ok">Connection OK</string>
     <string name="settings_sync_error">Error: %s</string>
     <string name="settings_sync_not_configured">Not configured</string>
+    <string name="settings_section_transcription">Transcription</string>
+    <string name="settings_transcription_provider">Provider</string>
+    <string name="settings_transcription_endpoint">Endpoint</string>
+    <string name="settings_transcription_model">Model</string>
+    <string name="settings_transcription_api_key">API key</string>
+    <string name="settings_transcription_language">Default language</string>
+    <string name="settings_transcription_language_auto">Auto</string>
+    <string name="settings_transcription_auto">Transcribe on finish</string>
+    <string name="settings_transcription_auto_sub">When each recording finishes</string>
 
     <!-- Recording / misc -->
     <string name="recording_default_name">Recording %d</string>
