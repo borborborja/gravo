@@ -23,7 +23,8 @@ Kotlin 2.1 + Jetpack Compose (BOM), minSdk 26, compile/target 35, AGP 8.7, Gradl
 - **DI manual**: `GrabadoraApp.container` → `AppContainer` (lazy, sin Hilt/Koin). Las
   dependencias globales nuevas se registran ahí.
 - **Grabación**: `audio/RecordingService` (foreground, `foregroundServiceType="microphone"`)
-  + `RecordingController` + `AudioCaptureEngine`.
+  + `RecordingController` + `AudioCaptureEngine`. El audímetro (preview) y el modo del botón
+  (dos botones vs mantener para parar) son ajustes; `RecordTapLogic` decide el toque de forma pura.
 - **Nativo** (`app/src/main/cpp`): JNI `gravocodecs` enlaza LAME 3.100 y libFLAC 1.4.3
   vendorizados en `cpp/third_party/`. **LAME es LGPL: debe seguir siendo un `.so`
   separado (`libmp3lame.so`), nunca enlace estático.** FLAC (BSD) sí va estático.
