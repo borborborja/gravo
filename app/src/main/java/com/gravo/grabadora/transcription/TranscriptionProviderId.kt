@@ -24,8 +24,8 @@ enum class TranscriptionProviderId(
 ) {
     WHISPER(
         "Whisper",
-        "https://api.openai.com/v1/audio/transcriptions",
-        "whisper-1",
+        "https://api.groq.com/openai/v1/audio/transcriptions",
+        "whisper-large-v3-turbo",
         supportsLanguageHint = true,
         acceptedExtensions = setOf("mp3", "mp4", "mpeg", "mpga", "m4a", "wav", "webm"),
         maxBytes = 25L * 1024 * 1024,
